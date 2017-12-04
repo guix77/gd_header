@@ -62,7 +62,11 @@ class GdheaderBlock extends BlockBase implements BlockPluginInterface {
         'library' => array(
           'gd_header/gd-header',
         ),
-        'drupalSettings' => array('gd_header' => isset($url) ? array('block_img_url' => $url) : ''),
+        'drupalSettings' => array(
+          'gd_header' => array(
+            'block_img_url' => isset($url) ? $url : '',
+          ),
+        ),
       ),
     );
   }
