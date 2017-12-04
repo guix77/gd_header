@@ -50,9 +50,10 @@ class GdheaderBlock extends BlockBase implements BlockPluginInterface {
       // Image URL.
       $fid = $config['gdheader_img'][$i];
       $file = File::load($fid);
-      $path = $file->getFileUri();
-
-      $url = ImageStyle::load($style)->buildUrl($path);
+      if ($file) {
+        $path = $file->getFileUri();
+        $url = ImageStyle::load($style)->buildUrl($path);
+      }
     }
 
     return array(
@@ -156,16 +157,18 @@ class GdheaderBlock extends BlockBase implements BlockPluginInterface {
     $this->configuration['gdheader_node_type'] = $values['gdheader_node_type'];
     $this->configuration['gdheader_img_style'] = $values['gdheader_img_style'];
     $this->configuration['gdheader_img'] = $values['gdheader_img'];
+    $images = $values['gdheader_img'];
 
     // Set the files permanent and add usages.
     if (isset($images)) {
+
       foreach ($images as $image) {
 
         $file = File::load($image);
         if ($file) {
 
           // If the file is not already permanent:
-          if (!$file->isPermanent()) {
+          if (!($file->isPermanent())) {
 
             // Then set the file as permanent.
             $file->setPermanent();
@@ -174,6 +177,7 @@ class GdheaderBlock extends BlockBase implements BlockPluginInterface {
 
           // If the file has not already an usage for this module and block:
           $file_usage = \Drupal::service('file.usage')->listUsage($file);
+
           if (isset($file_usage['gd_header'])) {
             if (isset($file_usage['gd_header']['block'])) {
               if (isset($file_usage['gd_header']['block']['gdheader'])) {
@@ -219,10 +223,14 @@ class GdheaderBlock extends BlockBase implements BlockPluginInterface {
     }
 
     foreach ($fids_usages_to_delete as $fid_usage_to_delete) {
-      $file_usage_to_delete = File::load($fid_usage_to_delete);
+      $file_to_delete = File::load($fid_usage_to_delete);
 
       // Delete the file usage.
-      \Drupal::service('file.usage')->delete($file_usage_to_delete, 'gd_header', 'block', 'gdheader');
+      \Drupal::service('file.usage')->delete($file_to_delete, 'gd_header', 'block', 'gdheader');
+
+      // Set the file as temporary so it can be deleted by Drupal.
+      $file_to_delete->setTemporary();
+      $file_to_delete->save();
     }
   }
 
