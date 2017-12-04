@@ -23,8 +23,6 @@ At the bare minimum, you need to have some Image styles (admin/config/media/imag
 
 Then go on /admin/structure/block, add the "GD Header" block somewhere and configure it (admin/structure/block/manage/gdheader).
 
-+ Simplest confi
-
 ## Roadmap
 
 I'd love to see Responsive image support for this module, after modules gets a decent stable release with the current features.
