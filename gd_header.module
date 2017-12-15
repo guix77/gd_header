@@ -38,8 +38,8 @@ function gd_header_node_view(array &$build, EntityInterface $entity, EntityViewD
           if ($entity->$field_name->getValue()) {
 
             // Then select a random image.
-            $i = rand(0, $entity->field_image->count() - 1);
-            $fid = $entity->field_image->getValue()[$i]['target_id'];
+            $i = rand(0, $entity->$field_name->count() - 1);
+            $fid = $entity->$field_name->getValue()[$i]['target_id'];
 
             // And generate the image style image.
             $file = File::load($fid);
